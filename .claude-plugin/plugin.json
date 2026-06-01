@@ -1,0 +1,34 @@
+{
+  "name": "cyborg",
+  "description": "Always-on output discipline for Claude Code. Cuts tokens and AI slop (mirroring, preamble, filler, hedging, vague declaratives) while keeping clean readable expert prose. Auto-injects via hooks every session; toggle with 'cyborg up' / 'cyborg down'.",
+  "author": {
+    "name": "Gaurav Gandhi",
+    "url": "https://github.com/gggauravgandhi"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/cyborg-activate.js\"",
+            "timeout": 5,
+            "statusMessage": "Loading cyborg mode..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/cyborg-toggle.js\"",
+            "timeout": 5,
+            "statusMessage": "Tracking cyborg mode..."
+          }
+        ]
+      }
+    ]
+  }
+}

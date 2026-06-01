@@ -1,0 +1,10 @@
+# Reference skills (other projects' code — not part of cyborg, not ours to ship)
+ref_skills/
+
+# Local dogfood config (machine-specific absolute paths; not portable)
+.claude/
+
+# OS / editor junk
+.DS_Store
+*.log
+node_modules/

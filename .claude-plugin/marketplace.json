@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "cyborg",
+  "description": "Always-on output discipline for Claude. Cuts tokens and AI slop while keeping clean, readable expert prose.",
+  "owner": {
+    "name": "Gaurav Gandhi",
+    "url": "https://github.com/gggauravgandhi"
+  },
+  "plugins": [
+    {
+      "name": "cyborg",
+      "description": "Cut tokens and AI slop on every response. Toggle with 'cyborg up' / 'cyborg down'.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
