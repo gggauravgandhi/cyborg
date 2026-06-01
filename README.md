@@ -100,6 +100,15 @@ cyborg/
 
 The ruleset came out of a four-model debate (Gemini, Codex, Sonnet, Opus) that put the paste-in block first, cut a redundant self-check, and added a no-mirroring rule. The hook mechanism is ported from caveman.
 
+## Credits
+
+cyborg picked up a couple of good ideas from skills that came before it:
+
+- [stop-slop](https://github.com/hardikpandya/stop-slop) by Hardik Pandya, for how to spot and cut AI writing tells.
+- [caveman](https://github.com/JuliusBrussee/caveman) by Julius Brussee, for the hook-based always-on and toggle approach.
+
+It goes its own way on the rest: clean expert prose rather than compression, a ruleset shaped by a four-model debate, and a safety bypass.
+
 ## Author
 
 Gaurav Gandhi ([@gggauravgandhi](https://github.com/gggauravgandhi)).
