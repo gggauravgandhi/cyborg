@@ -5,8 +5,8 @@
 `cyborg` is a Claude Code **plugin** that regulates *how Claude writes*: it strips slop (mirroring, preamble, filler, hedging, vague declaratives) and trims optional grammar to cut tokens, while keeping clean, readable expert prose. It is not an app; the "code" is two small hooks.
 
 How always-on is achieved (ported from caveman): a plain skill body loads on-demand, so it can't be always-on alone. Hooks declared in `.claude-plugin/plugin.json` do it:
-- `hooks/cyborg-activate.js` (SessionStart) injects the `<!-- cyborg-begin -->` block from `skills/cyborg/SKILL.md` into context every session, and resets state to up.
-- `hooks/cyborg-toggle.js` (UserPromptSubmit) flips the down-flag on "cyborg up/down" and re-injects a short reminder every turn (anti-drift). Both are hidden context, never printed.
+- `hooks/cyborg-activate.js` (SessionStart) injects the `<!-- cyborg-begin -->` block from `skills/cyborg/SKILL.md` into context. SessionStart fires on `startup`/`resume`/`clear` AND on `compact` (after auto/manual compaction), so this re-injects post-compact too. That re-injection is now cyborg's primary anti-drift mechanism, not a per-turn reminder. It resets state to up on every source EXCEPT `compact`: compaction is mid-session, so a "cyborg down" the user set earlier survives it, and the injection honors that preserved flag (down + compact emits nothing).
+- `hooks/cyborg-toggle.js` (UserPromptSubmit) flips the down-flag on "cyborg up/down". Per-turn reminder injection is gated off (`INJECT_REMINDER = false`); the hook's only live job is toggle detection. The `REMINDER` text is kept (content-synced with the block) so flipping the const back to `true` fully restores per-turn reinforcement. Both hooks are hidden context, never printed.
 - `hooks/cyborg-flag.js` is a presence-only down-flag (`~/.claude/.cyborg-down`). NEVER read its bytes into context; readers inject a fixed string, so there is no symlink-content-injection vector.
 
 The SessionStart hook injects ONLY the block, not the whole SKILL.md; injecting the full file every session would defeat a token-saving skill. Edit the block in `skills/cyborg/SKILL.md`; the hook reads it at runtime so changes propagate.
@@ -31,7 +31,7 @@ Reference skills live in `ref_skills/` (caveman) and `../ref/` (stop-slop). Cybo
 ## Behavioral Rules
 
 - **Self-consistency is non-negotiable.** The file must obey its own rules. After any edit, re-scan: no em dashes (`grep "—"`), no banned preamble, every example follows every rule. An example that breaks a rule teaches the rule is optional.
-- **Three layers, keep them in sync.** The rules live in three places: the injected block (`<!-- cyborg-begin -->...<!-- cyborg-end -->` in `skills/cyborg/SKILL.md`), the per-turn reminder (`REMINDER` in `hooks/cyborg-toggle.js`), and the SKILL body rules list. A change to a rule or the safety carve-out must update all three, or the SessionStart context, the per-turn reinforcement, and the human reference will disagree.
+- **Three layers, keep them in sync.** The rules live in three places: the injected block (`<!-- cyborg-begin -->...<!-- cyborg-end -->` in `skills/cyborg/SKILL.md`), the `REMINDER` in `hooks/cyborg-toggle.js`, and the SKILL body rules list. A change to a rule or the safety carve-out must update all three, or the SessionStart context, the per-turn reinforcement, and the human reference will disagree. The `REMINDER` is currently dormant (`INJECT_REMINDER = false`) but stays content-synced so re-enabling it needs no rewrite.
 - **Do not reintroduce caveman comparisons** into the skill body. The skill states what cyborg does; it does not rank itself against other skills.
 - **No intensity levels.** Up/down only. Do not clone caveman's lite/full/ultra tiers.
 - **Do not re-add a self-check / "review before responding" section.** The debate cut it as redundant with the rules and as context bloat. Sharpen rules instead of adding meta-rules.
@@ -49,10 +49,10 @@ Skill content (manual, rule-based):
 
 Hooks (test in isolation with mock stdin, no install needed; no browser/dev-server):
 
-5. `node hooks/cyborg-activate.js` prints "CYBORG ACTIVE" + the real block; clears a stale `.cyborg-down`.
-6. `echo '{"prompt":"x"}' | node hooks/cyborg-toggle.js` emits `additionalContext` when up; nothing when down.
-7. `cyborg down` / `stop cyborg` create the flag; `cyborg up` / `cut the slop` clear it.
-8. Malformed stdin exits 0 (silent-fail, never blocks the prompt).
+5. `echo '{"source":"startup"}' | node hooks/cyborg-activate.js` prints "CYBORG ACTIVE" + the real block; clears a stale `.cyborg-down`.
+6. Compact preserves a down-flag and stays silent: with `.cyborg-down` present, `echo '{"source":"compact"}' | node hooks/cyborg-activate.js` emits NOTHING and leaves the flag in place; with no flag, `source":"compact"` re-injects the block (post-compact reinforcement).
+7. `echo '{"prompt":"x"}' | node hooks/cyborg-toggle.js` emits nothing (per-turn reminder gated off); `cyborg down` / `stop cyborg` still create the flag; `cyborg up` / `cut the slop` still clear it.
+8. Malformed/empty stdin exits 0 (silent-fail, never blocks the prompt).
    Use a temp `CLAUDE_CONFIG_DIR` so tests don't touch the real `~/.claude`.
 
 ## Project-Specific

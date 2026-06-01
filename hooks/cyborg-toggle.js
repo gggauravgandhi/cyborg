@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 // cyborg — UserPromptSubmit hook.
 //
-// Two jobs every turn:
-//   1. Toggle: detect "cyborg up/down" (and aliases) in the user prompt and flip
-//      the down-flag.
-//   2. Per-turn reinforcement: while up, emit a short fixed reminder as hidden
-//      additionalContext. This is the anti-drift workhorse — the SessionStart
-//      injection alone fades over a long conversation (and after context
-//      compression), and competing per-turn instructions from other plugins
-//      crowd it out. The reminder is hidden context, never printed output, so it
-//      reinforces behavior without the model narrating its own compliance.
+// Job: detect "cyborg up/down" (and aliases) in the user prompt and flip the
+// down-flag. That's it.
+//
+// Per-turn reinforcement is OFF (INJECT_REMINDER = false). Cyborg relies on
+// SessionStart + post-compact injection (cyborg-activate.js) to stay in context,
+// not a reminder on every prompt. The reminder text is kept below so flipping
+// INJECT_REMINDER back to true fully restores per-turn reinforcement without
+// re-deriving the wording (and keeps it in sync with the injected block).
 
 const { isDown, setDown, setUp } = require('./cyborg-flag');
+
+const INJECT_REMINDER = false;
 
 const REMINDER =
   'CYBORG: dense, slop-free. No mirroring/preamble/postamble, no narrating compliance, no em dashes. ' +
@@ -38,7 +39,7 @@ process.stdin.on('end', () => {
 
     // Reinforce only while up. State is read AFTER applying the toggle, so a
     // "cyborg down" this turn correctly suppresses the reminder immediately.
-    if (!isDown()) {
+    if (INJECT_REMINDER && !isDown()) {
       process.stdout.write(JSON.stringify({
         hookSpecificOutput: {
           hookEventName: 'UserPromptSubmit',

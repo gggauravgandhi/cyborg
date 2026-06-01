@@ -34,8 +34,8 @@ Same answers, slop removed. Note the last one: cyborg trims the filler but keeps
 
 A plain skill body is loaded on-demand, not every turn, so it can't be always-on by itself. cyborg solves this with **hooks** (the same mechanism caveman uses):
 
-- A `SessionStart` hook injects the ruleset into context at the start of every session.
-- A `UserPromptSubmit` hook re-injects a short reminder every turn (anti-drift) and watches for toggle commands.
+- A `SessionStart` hook injects the ruleset into context at the start of every session and re-injects it after each context compaction (the SessionStart event fires with source `compact`). This is what keeps cyborg in context.
+- A `UserPromptSubmit` hook watches for toggle commands (`cyborg up`/`down`). Per-turn reminder injection is currently off; flip `INJECT_REMINDER` in `cyborg-toggle.js` to re-enable it.
 
 Both are hidden context, never printed, so cyborg stays active without ever narrating its own compliance.
 
@@ -90,8 +90,8 @@ cyborg/
 │   ├── plugin.json       # Declares the SessionStart + UserPromptSubmit hooks
 │   └── marketplace.json  # For /plugin marketplace add
 ├── hooks/
-│   ├── cyborg-activate.js # SessionStart: inject the block, reset to up
-│   ├── cyborg-toggle.js   # UserPromptSubmit: toggle flag + per-turn reminder
+│   ├── cyborg-activate.js # SessionStart: inject the block (incl. post-compact), reset to up (not on compact)
+│   ├── cyborg-toggle.js   # UserPromptSubmit: toggle flag (per-turn reminder gated off)
 │   └── cyborg-flag.js     # Presence-only down-flag (symlink-safe)
 ├── skills/cyborg/
 │   └── SKILL.md          # Rules + examples lead; paste-in block in a bottom install section
