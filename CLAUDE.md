@@ -17,7 +17,7 @@ Known limitation (do NOT "fix"): if a project's `CLAUDE.md` says "cyborg down", 
 
 `SKILL-legacy.md` (`name: cyborg-legacy`, deprecated) is the pre-debate long-form version, kept as a reference snapshot. Do not edit or load it. The active skill is `skills/cyborg/SKILL.md`.
 
-This design came out of a 4-model debate (transcript: `~/.claude-octopus/debates/local/001-cyborg-skill-review/`). Key rulings baked in: block-on-top is canonical; the self-check was CUT (sharp negative rules are the check, a meta-reminder is redundant bloat); the em-dash ban stays; "no inanimate actors" removed; "no mirroring" is Rule 1.
+This design came out of a 4-model debate (transcript: `~/.claude-octopus/debates/local/001-cyborg-skill-review/`). Key rulings baked in: the self-check was CUT (sharp negative rules are the check, a meta-reminder is redundant bloat); the em-dash ban stays; "no inanimate actors" removed; "no mirroring" is Rule 1. The debate also concluded "block-on-top is canonical", but the plugin shipped later reversed that: leading with an install imperative made Claude offer manual install and ask where to put it (v0.1.1 fix). Now rules lead; the paste-in block sits in a bottom install section gated to web/desktop, with a "do not offer to install unprompted" guard.
 
 Reference skills live in `ref_skills/` (caveman) and `../ref/` (stop-slop). Cyborg borrows caveman's persistence/toggle model and stop-slop's slop-cutting rules, adapted for assistant output.
 
@@ -31,6 +31,7 @@ Reference skills live in `ref_skills/` (caveman) and `../ref/` (stop-slop). Cybo
 ## Behavioral Rules
 
 - **Self-consistency is non-negotiable.** The file must obey its own rules. After any edit, re-scan: no em dashes (`grep "—"`), no banned preamble, every example follows every rule. An example that breaks a rule teaches the rule is optional.
+- **Three layers, keep them in sync.** The rules live in three places: the injected block (`<!-- cyborg-begin -->...<!-- cyborg-end -->` in `skills/cyborg/SKILL.md`), the per-turn reminder (`REMINDER` in `hooks/cyborg-toggle.js`), and the SKILL body rules list. A change to a rule or the safety carve-out must update all three, or the SessionStart context, the per-turn reinforcement, and the human reference will disagree.
 - **Do not reintroduce caveman comparisons** into the skill body. The skill states what cyborg does; it does not rank itself against other skills.
 - **No intensity levels.** Up/down only. Do not clone caveman's lite/full/ultra tiers.
 - **Do not re-add a self-check / "review before responding" section.** The debate cut it as redundant with the rules and as context bloat. Sharpen rules instead of adding meta-rules.
@@ -44,7 +45,7 @@ Skill content (manual, rule-based):
 1. `grep -n "—" skills/cyborg/SKILL.md` returns nothing.
 2. Every `Cyborg:` example obeys rules 1-10.
 3. The paste-in block and the body agree on toggle/precedence behavior.
-4. The block sits at the top as the canonical artifact, before the long-form rules.
+4. Rules lead the file; the paste-in block lives in the bottom "Installation" section with the do-not-offer-unprompted guard intact.
 
 Hooks (test in isolation with mock stdin, no install needed; no browser/dev-server):
 

@@ -77,7 +77,8 @@ No hooks, so paste the `<!-- cyborg-begin -->` block from [`skills/cyborg/SKILL.
 
 - Does not degrade clarity for brevity. Complex steps get explained in full.
 - Does not touch code, commit messages, or PR descriptions.
-- Does not strip safety detail. Security warnings, irreversible-action confirmations, and exact error text stay complete.
+- Does not strip safety detail. Security warnings, destructive or irreversible action confirmations, and exact error text stay complete.
+- Eases off on demand. If you're confused or ask it to expand, it drops density and explains in full.
 
 ## Structure
 
@@ -91,7 +92,7 @@ cyborg/
 │   ├── cyborg-toggle.js   # UserPromptSubmit: toggle flag + per-turn reminder
 │   └── cyborg-flag.js     # Presence-only down-flag (symlink-safe)
 ├── skills/cyborg/
-│   └── SKILL.md          # Canonical block on top, full ruleset + examples beneath
+│   └── SKILL.md          # Rules + examples lead; paste-in block in a bottom install section
 ├── SKILL-legacy.md       # Deprecated pre-debate version, reference snapshot only
 ├── README.md
 └── CLAUDE.md             # Working instructions for developing this skill
