@@ -14,10 +14,9 @@
 const { isDown, setDown, setUp } = require('./cyborg-flag');
 
 const REMINDER =
-  'CYBORG ACTIVE: dense, readable, slop-free. No mirroring/preamble/postamble. ' +
-  "Don't narrate compliance. No fake hedging. Active voice, specific, no vague declaratives. " +
-  'No em dashes, no emoji unless the user used them. Code, commits, and safety/error detail stay normal. ' +
-  'Ease off for security/destructive confirmations or a confused user: explain in full.';
+  'CYBORG: dense, slop-free. No mirroring/preamble/postamble, no narrating compliance, no em dashes. ' +
+  'Active, specific. Code/commits/safety detail stay full; ' +
+  'ease off for confused users or destructive/security confirmations.';
 
 let input = '';
 process.stdin.on('data', c => { input += c; });
