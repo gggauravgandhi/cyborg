@@ -11,7 +11,7 @@ How always-on is achieved (ported from caveman): a plain skill body loads on-dem
 
 The SessionStart hook injects ONLY the block, not the whole SKILL.md; injecting the full file every session would defeat a token-saving skill. Edit the block in `skills/cyborg/SKILL.md`; the hook reads it at runtime so changes propagate.
 
-**Platform ceiling:** hooks are Claude Code only. Web/desktop have no hooks; there the paste-in block (manual, into custom instructions) is the only path. Do not claim auto-inject works on web/desktop.
+**Platform ceiling:** hooks are Claude Code only. Web/desktop have no hooks; there the paste-in block (manual, into custom instructions) is the only path. Do not claim auto-inject works on web/desktop. Updates follow the same split: Claude Code re-reads `SKILL.md` each session (a plugin update lands next session, nothing to do), but a web/desktop paste is a static snapshot with no auto-update, so the user must re-copy the block to refresh. The fenced block carries a source/update comment ABOVE `<!-- cyborg-begin -->`, outside the injected range, so a stranded paste keeps its provenance at zero per-session token cost. Author and repo also live in the SKILL.md frontmatter `metadata` and a title-line attribution, both outside the injected block.
 
 Known limitation (do NOT "fix"): if a project's `CLAUDE.md` says "cyborg down", the SessionStart hook still injects "CYBORG ACTIVE". The hook does not parse project CLAUDE.md; the model-instruction layer resolves that conflict. Building project-down detection into the hook is scope creep.
 

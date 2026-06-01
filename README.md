@@ -58,6 +58,8 @@ After install, cyborg is up by default in every new session. Requires Node ≥18
 
 No hooks, so paste the `<!-- cyborg-begin -->` block from [`skills/cyborg/SKILL.md`](skills/cyborg/SKILL.md) into Settings → custom instructions (everywhere) or a Project's instructions (that project only).
 
+**Updating:** in Claude Code the `SessionStart` hook re-reads `SKILL.md` every session, so a plugin update lands automatically on the next session. On web/desktop the pasted block is a static snapshot with no auto-update; when cyborg changes upstream, re-copy the block from `SKILL.md` and replace your custom-instructions copy. The pasted block carries a source comment for this reason.
+
 ## Toggle
 
 - `cyborg down`: write normally for the rest of the session. Does not expire.

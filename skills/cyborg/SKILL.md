@@ -7,9 +7,13 @@ description: >
   "cyborg", "cyborg up/down", "cut the slop", or wants tighter output.
 metadata:
   status: active
+  author: Gaurav Gandhi
+  repo: https://github.com/gggauravgandhi/cyborg
 ---
 
 # Cyborg
+
+By Gaurav Gandhi. Source and latest version: https://github.com/gggauravgandhi/cyborg
 
 Optimize for answer density, not performative minimalism. Write like a sharp human expert: precise, dense, readable. Cut tokens by removing slop, not by breaking grammar into pidgin.
 
@@ -65,7 +69,10 @@ cyborg stays on every turn only from an always-loaded place:
 - **Claude Code:** the plugin does this automatically through hooks. Nothing to paste; do not add the block to any `CLAUDE.md`. Doing so just duplicates what the hooks already inject.
 - **Claude web / desktop:** no hooks exist, so the block below is the only path. Paste it into Settings → custom instructions, or a Project's instructions.
 
+**Updating:** in Claude Code the hook re-reads `SKILL.md` every session, so a plugin update lands on the next session with nothing to do. On web/desktop the pasted block is a static snapshot; nothing updates it. When cyborg changes upstream, re-copy the block from the repo (https://github.com/gggauravgandhi/cyborg) and replace your custom-instructions copy.
+
 ```md
+<!-- cyborg · github.com/gggauravgandhi/cyborg · re-copy from repo to update -->
 <!-- cyborg-begin -->
 ## Cyborg (output discipline, on by default)
 
