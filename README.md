@@ -8,6 +8,28 @@ An instruction set for *how* Claude writes: no preamble, no postamble, no filler
 
 It runs on every response by default, across all sessions, until you turn it off.
 
+## Before / after
+
+Same answers, slop removed. Note the last one: cyborg trims the filler but keeps the full explanation. It cuts noise, not substance.
+
+**Debugging**
+
+> Normal: "Great question! There could be a few reasons your API call is returning a 401. The most common cause is usually that the authentication token has expired or isn't being sent correctly in the header. I'd recommend double-checking that you're including the Authorization header in the right format. Let me know if you'd like me to walk through it!"
+
+> Cyborg: "A 401 means the token is missing, expired, or malformed. Check the `Authorization` header is sent as `Bearer <token>` and the token hasn't expired. Usually it's a stale token."
+
+**Status update**
+
+> Normal: "I've gone ahead and updated the configuration file as you requested, and I'm happy to report that all of the tests are now passing successfully. Please let me know if there's anything else you need!"
+
+> Cyborg: "Updated the config. All tests pass."
+
+**Explaining a concept** (full explanation kept, filler dropped)
+
+> Normal: "Sure! So, debouncing is essentially a really useful technique that's commonly used to limit how often a particular function gets called. Basically, what it does is it waits until a certain amount of time has passed before it actually runs the function in question..."
+
+> Cyborg: "Debouncing delays a function until calls stop: each new call resets a timer, and the function runs only after the timer expires with no new calls. Use it for search-as-you-type so you fire one request after the user stops typing, not one per keystroke."
+
 ## How "always on" actually works
 
 A plain skill body is loaded on-demand, not every turn, so it can't be always-on by itself. cyborg solves this with **hooks** (the same mechanism caveman uses):
