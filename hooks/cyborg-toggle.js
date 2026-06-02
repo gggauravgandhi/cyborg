@@ -4,20 +4,18 @@
 // Job: detect "cyborg up/down" (and aliases) in the user prompt and flip the
 // down-flag. That's it.
 //
-// Per-turn reinforcement is OFF (INJECT_REMINDER = false). Cyborg relies on
-// SessionStart + post-compact injection (cyborg-activate.js) to stay in context,
-// not a reminder on every prompt. The reminder text is kept below so flipping
-// INJECT_REMINDER back to true fully restores per-turn reinforcement without
-// re-deriving the wording (and keeps it in sync with the injected block).
+// Per-turn reinforcement is ON (INJECT_REMINDER = true). REMINDER is a
+// compressed nudge carrying only the highest-slip rules (preamble, em dashes);
+// it is NOT a mirror of the injected block. The block (re-injected by
+// cyborg-activate.js at SessionStart + post-compact) carries the full ruleset
+// and the safety carve-out. The two must not contradict, but REMINDER is a
+// deliberate subset, not a copy.
 
 const { isDown, setDown, setUp } = require('./cyborg-flag');
 
-const INJECT_REMINDER = false;
+const INJECT_REMINDER = true;
 
-const REMINDER =
-  'CYBORG: dense, slop-free. No mirroring/preamble/postamble, no narrating compliance, no em dashes. ' +
-  'Active, specific. Code/commits/safety detail stay full; ' +
-  'ease off for confused users or destructive/security confirmations.';
+const REMINDER = 'CYBORG up. Dense, slop-free, no preamble or em dashes.';
 
 let input = '';
 process.stdin.on('data', c => { input += c; });

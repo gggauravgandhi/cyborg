@@ -1,6 +1,6 @@
 {
   "name": "cyborg",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Always-on output discipline for Claude Code. Cuts tokens and AI slop (mirroring, preamble, filler, hedging, vague declaratives) while keeping clean readable expert prose. Auto-injects via hooks at session start and after each compaction; toggle with 'cyborg up' / 'cyborg down'.",
   "author": {
     "name": "Gaurav Gandhi",
